@@ -45,11 +45,34 @@ public:
 
 	T Pop()
 	{
-		T* newArray = new T[_size];
+		T* newArray = new T[_size - 1];
 		T itemForDelete = _array[--_size];
 		for(size_t i = 0; i < _size; i++)
 		{
 			newArray[i] = _array[i];
+		}
+		delete[] _array;
+		_array = newArray;
+		return itemForDelete;
+	}
+
+	T Pop(size_t index)
+	{
+		if(index >= _size)
+		{
+			throw std::invalid_argument("Index must be less _size");
+		}
+
+		T* newArray = new T[--_size];
+		T itemForDelete = _array[index];
+		for(size_t i = 0; i < index; i++)
+		{
+			newArray[i] = _array[i];
+		}
+
+		for(size_t i = index; i < _size; i++)
+		{
+			newArray[i] = _array[i + 1];
 		}
 		delete[] _array;
 		_array = newArray;
@@ -67,27 +90,37 @@ public:
 		delete[] _array;
 		_array = newArray;
 	}
+
+
 };
 
 int main()
 {
-	size_t size = 10;
-	IntArray<int> a(size);
-
-	std::cout << "pop" << endl;
-	for(size_t i = 0; i < size; i++)
+	try
 	{
-		std::cout << a.Pop()  << ", " << a.GetSize() << endl;
+		size_t size = 10;
+		IntArray<int> a(size);
+
+		std::cout << "pop" << endl;
+		for(size_t i = 0; i < size; i++)
+		{
+			std::cout << a.Pop() << ", " << a.GetSize() << endl;
+		}
+
+		std::cout << "size: " << a.GetSize() << endl;
+
+		std::cout << "append" << endl;
+		for(size_t i = 0; i < size; i++)
+		{
+			a.Append(i);
+			std::cout << a.GetSize() << endl;
+		}
+
+		
 	}
-
-	std::cout << "size: " << a.GetSize() << endl;
-
-	std::cout << "append" << endl;
-	for(size_t i = 0; i < size; i++)
+	catch(const std::invalid_argument& err)
 	{
-		a.Append(i);
-		std::cout << a.GetSize() << endl;
+		std::cout << err.what() << endl;
 	}
-
 	return 0;
 }
