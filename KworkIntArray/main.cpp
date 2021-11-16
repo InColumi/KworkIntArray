@@ -8,8 +8,22 @@ class IntArray
 private:
 	T* _array;
 	size_t _size;
+
+	IntArray(T* arr, size_t size)
+	{
+		_size = size;
+		_array = new T[_size];
+		for(size_t i = 0; i < _size; i++)
+		{
+			_array[i] = arr[i];
+		}
+	}
 public:
-	IntArray(): _array(NULL), _size(0) {}
+	IntArray()
+	{
+		_size = 0;
+		_array = new T[_size];
+	}
 
 	IntArray(size_t size)
 	{
@@ -91,7 +105,21 @@ public:
 		_array = newArray;
 	}
 
+	IntArray operator + (IntArray arr)
+	{
+		if(arr._size != _size && _size != NULL)
+		{
+			throw std::invalid_argument("Sizes must be equals!");
+		}
 
+		T* newArray = new T[_size];
+		for(size_t i = 0; i < _size; i++)
+		{
+			newArray[i] = _array[i] + arr._array[i];
+		}
+
+		return IntArray(newArray, _size);
+	}
 };
 
 int main()
@@ -115,8 +143,14 @@ int main()
 			a.Append(i);
 			std::cout << a.GetSize() << endl;
 		}
+	
+		IntArray<int> b;
+		IntArray<int> c;
 
-		
+		b.Append(5);
+		c.Append(5);
+
+		b + c;
 	}
 	catch(const std::invalid_argument& err)
 	{
